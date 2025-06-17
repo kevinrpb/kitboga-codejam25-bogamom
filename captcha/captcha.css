@@ -3,25 +3,230 @@
 	src: url("./kenney-high.ttf"); /*URL to font*/
 }
 
+:root {
+	--captcha-width: 390px;
+	--captcha-height: 300px;
+	--container-padding: 2px;
+	--bottom-panel-height: 80px;
+}
+
 html,
 body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
 	touch-action: manipulation;
+
+	/* TODO: Remove these */
+	background-color: black;
+	padding: 1em;
+}
+
+* {
+	font-family: "KenneyHigh", monospace;
+	font-size: 24px;
+}
+
+p {
+	margin: 0;
+}
+
+.hide {
+	display: none;
+}
+
+.panel {
+	padding: var(--container-padding);
+
+	border: 3px solid black;
+	box-sizing: border-box;
+	background-color: white;
+}
+
+.panel > button {
+	background: none;
+	border: none;
+}
+
+.buttons-panel > button:hover {
+	cursor: pointer;
+}
+
+.buttons-panel > button::before {
+	content: ">";
+	position: absolute;
+	left: 8px;
+	display: none;
+}
+
+.buttons-panel > button:hover:before,
+.buttons-panel > button:focus::before {
+	display: block;
 }
 
 #captcha-container {
 	position: relative;
-	width: 390px;
-	height: 300px;
+	width: var(--captcha-width);
+	height: var(--captcha-height);
 	overflow: hidden;
 	touch-action: manipulation;
 	background: white;
+}
 
-	box-sizing: border-box;
+#dialog-container {
+	position: absolute;
+	left: var(--container-padding);
+	bottom: var(--container-padding);
 
-	border: 0.4em solid black;
+	width: calc(100% - 2 * var(--container-padding));
+	height: var(--bottom-panel-height);
+}
 
-	font-family: "KenneyHigh", monospace;
+#dialog-text {
+	width: 100%;
+	height: 100%;
+	padding: 6px;
+}
+
+#action-menu {
+	position: absolute;
+	right: var(--container-padding);
+	bottom: var(--container-padding);
+
+	width: 50%;
+	height: var(--bottom-panel-height);
+
+	display: flex;
+	flex-flow: row wrap;
+	gap: 2px;
+}
+
+#action-menu > button {
+	position: relative;
+
+	width: calc(50% - 1px);
+	height: calc(50% - 1px);
+}
+
+#moves-panel {
+	position: absolute;
+	right: var(--container-padding);
+	bottom: var(--container-padding);
+
+	height: var(--bottom-panel-height);
+	width: 60%;
+
+	padding-left: 10px;
+
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+#moves-panel > button {
+	height: 25%;
+	text-align: left;
+}
+
+#move-description {
+	position: absolute;
+	left: var(--container-padding);
+	bottom: var(--bottom-panel-height);
+
+	width: 50%;
+	height: calc(var(--bottom-panel-height) - 10px);
+
+	display: flex;
+	flex-flow: column;
+	justify-content: center;
+}
+
+#move-description > p {
+	width: 100%;
+
+	text-align: center;
+}
+
+#bitcoin-container {
+	position: absolute;
+	left: var(--container-padding);
+	top: var(--container-padding);
+
+	width: calc(100% - 2 * var(--container-padding));
+
+	display: flex;
+	flex-flow: row nowrap;
+	gap: 0;
+}
+
+#bitcoin-info {
+	width: 50%;
+
+	padding-left: 70px;
+
+	display: flex;
+	flex-flow: column;
+
+	align-items: start;
+}
+
+#bitcoin-info > p {
+	text-align: center;
+	width: 80px;
+}
+
+#bitcoin-image-container {
+	width: 40%;
+
+	display: flex;
+	flex-flow: column;
+
+	justify-content: end;
+	align-items: start;
+}
+
+#bitcoin-image {
+	width: 60px;
+	height: 60px;
+}
+
+#bitcoin-health-container {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 4px;
+
+	padding: 4px;
+
+	border-left: 3px solid black;
+	border-bottom: 3px solid black;
+}
+
+#bitcoin-health {
+	min-width: 80px;
+	height: 4px;
+
+	border-radius: 4px;
+
+	border: 2px solid black;
+
+	display: flex;
+	flex-flow: row;
+}
+
+#bitcoin-health-value {
+	height: 100%;
+
+	background-color: grey;
+}
+
+#bitcoin-health-value.v100 {
+	width: 100%;
+}
+
+#bitcoin-health-value.v50 {
+	width: 50%;
+}
+
+#bitcoin-health-value.v0 {
+	width: 0%;
 }

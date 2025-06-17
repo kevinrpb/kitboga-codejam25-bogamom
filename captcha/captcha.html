@@ -10,7 +10,49 @@
 </head>
 
 <body>
-  <div id="captcha-container">
+  <div id="captcha-container" class="panel">
+    <div id="bitcoin-container">
+      <div id="bitcoin-info">
+        <p id="bitcoin-name">BITCOIN</p>
+        <p id="bitcoin-level">:L99</p>
+
+        <div id="bitcoin-health-container">
+          <p>HP:</p>
+          <div id="bitcoin-health">
+            <div id="bitcoin-health-value" class="v100"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bitcoin-image-container">
+
+        <img id="bitcoin-image" src="./bitcoin-white.png" alt="">
+      </div>
+    </div>
+
+    <div id="dialog-container" class="panel">
+      <p id="dialog-text"></p>
+    </div>
+
+    <div id="action-menu" class="panel buttons-panel">
+      <button id="fight-button">FIGHT</button>
+      <button id="">PKMN</button>
+      <button id="">BALL</button>
+      <button id="">RUN</button>
+    </div>
+
+    <div id="moves-container" class="hide">
+      <div id="moves-panel" class="panel buttons-panel">
+        <button>RUSE</button>
+        <button>—</button>
+        <button>—</button>
+        <button>—</button>
+      </div>
+
+      <div id="move-description" class="panel">
+        <p>TYPE/<br>&nbsp;&nbsp;&nbsp;&nbsp;TRICK</p>
+      </div>
+    </div>
   </div>
 
   <script type="text/javascript">
