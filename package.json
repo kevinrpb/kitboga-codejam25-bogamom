@@ -1,0 +1,7 @@
+{
+  "name": "kitboga-codejam25",
+  "version": "1.0",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  }
+}
