@@ -16,10 +16,6 @@ body {
 	padding: 0;
 	overflow: hidden;
 	touch-action: manipulation;
-
-	/* TODO: Remove these */
-	background-color: black;
-	padding: 1em;
 }
 
 * {
