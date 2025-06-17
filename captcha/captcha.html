@@ -11,24 +11,48 @@
 
 <body>
   <div id="captcha-container" class="panel">
-    <div id="bitcoin-container">
-      <div id="bitcoin-info">
-        <p id="bitcoin-name">BITCOIN</p>
-        <p id="bitcoin-level">:L99</p>
+    <div id="bitcoin-container" class="character-container">
+      <div id="bitcoin-info" class="character-info">
+        <p id="bitcoin-name" class="character-name">BITCOIN</p>
+        <p id="bitcoin-level" class="character-level">:L99</p>
 
-        <div id="bitcoin-health-container">
-          <p>HP:</p>
-          <div id="bitcoin-health">
-            <div id="bitcoin-health-value" class="v100"></div>
+        <div id="bitcoin-health-container" class="character-health-container">
+          <div class="character-health-container-inner">
+            <p>HP:</p>
+            <div id="bitcoin-health" class="character-health">
+              <div id="bitcoin-health-value" class="character-health-value v100"></div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="bitcoin-image-container">
-
-        <img id="bitcoin-image" src="./bitcoin-white.png" alt="">
+      <div id="bitcoin-image-container" class="character-image-container">
+        <img id="bitcoin-image" class="character-image" src="./bitcoin-white.png" alt="">
       </div>
     </div>
+
+    <div id="character-container" class="character-container">
+      <div id="character-info" class="character-info">
+        <p id="character-name" class="character-name">character</p>
+        <p id="character-level" class="character-level">:L5</p>
+
+        <div id="character-health-container" class="character-health-container">
+          <div class="character-health-container-inner">
+            <p>HP:</p>
+            <div id="character-health" class="character-health">
+              <div id="character-health-value" class="character-health-value v100"></div>
+            </div>
+          </div>
+          <p class="character-health-text">10/10</p>
+        </div>
+      </div>
+
+      <div id="character-image-container" class="character-image-container">
+        <img id="character-image" class="character-image" src="./bitcoin-white.png" alt="">
+      </div>
+    </div>
+
+    <img id="bogaball" src="./bogaball.png">
 
     <div id="dialog-container" class="panel">
       <p id="dialog-text"></p>
@@ -37,16 +61,16 @@
     <div id="action-menu" class="panel buttons-panel">
       <button id="fight-button">FIGHT</button>
       <button id="">PKMN</button>
-      <button id="">BALL</button>
+      <button id="ball-button">BALL</button>
       <button id="">RUN</button>
     </div>
 
     <div id="moves-container" class="hide">
       <div id="moves-panel" class="panel buttons-panel">
         <button>RUSE</button>
-        <button>—</button>
-        <button>—</button>
-        <button>—</button>
+        <button>GRIFT</button>
+        <button disabled>—</button>
+        <button disabled>—</button>
       </div>
 
       <div id="move-description" class="panel">
