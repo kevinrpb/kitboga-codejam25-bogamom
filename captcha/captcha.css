@@ -1,3 +1,8 @@
+@font-face {
+	font-family: "KenneyHigh"; /*a name to be used later*/
+	src: url("./kenney-high.ttf"); /*URL to font*/
+}
+
 html,
 body {
 	margin: 0;
@@ -13,4 +18,10 @@ body {
 	overflow: hidden;
 	touch-action: manipulation;
 	background: white;
+
+	box-sizing: border-box;
+
+	border: 0.4em solid black;
+
+	font-family: "KenneyHigh", monospace;
 }
