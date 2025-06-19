@@ -37,6 +37,10 @@
 	animation: bogaball-throw var(--ball-throw-duration) forwards;
 }
 
+#bogaball.throw-reverse {
+	animation-direction: reverse;
+}
+
 @keyframes bitcoin-image-throw {
 	0% {
 		opacity: 1;
@@ -57,4 +61,8 @@
 
 #bitcoin-image.throw {
 	animation: bitcoin-image-throw var(--ball-throw-duration) forwards;
+}
+
+#bitcoin-image.throw-reverse {
+	animation-direction: reverse;
 }

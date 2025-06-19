@@ -10,7 +10,7 @@ const CAPTURE_CHANCE = [
 	[1.0, 0.0],
 ];
 
-const FORCE_CAPTURING = true;
+const FORCE_CAPTURING = false;
 
 /**
  ** State definitions
@@ -56,6 +56,7 @@ const GameState = {
 	ThrowBall: "state-throw-ball",
 	Capturing: "state-capturing",
 	Captured: "state-captured",
+	CaptureFailed: "state-capture-failed",
 
 	...baseState((state) => {
 		gameState = state;
@@ -74,6 +75,7 @@ const GameStates = {
 	ThrowBall: () => ({ name: GameState.ThrowBall }),
 	Capturing: () => ({ name: GameState.Capturing }),
 	Captured: () => ({ name: GameState.Captured }),
+	CaptureFailed: () => ({ name: GameState.CaptureFailed }),
 };
 
 /**
@@ -166,8 +168,8 @@ UIState.on(UIState.Captured, () => {
  */
 
 GameState.on(GameState.Start, () => {
-	bogaball.classList.remove("throw");
-	bitcoinImage.classList.remove("throw");
+	bogaball.classList.remove("throw", "throw-reverse");
+	bitcoinImage.classList.remove("throw", "throw-reverse");
 	bogaball.classList.remove("capturing");
 });
 
@@ -198,11 +200,30 @@ GameState.on(GameState.Capturing, () => {
 			UIState.set(UIStates.Captured());
 			GameState.set(GameStates.Captured());
 		}, 3 * 1000);
+	} else {
+		setTimeout(
+			() => {
+				GameState.set(GameStates.CaptureFailed());
+			},
+			Math.random() * 3 * 1000,
+		);
 	}
 });
 
 GameState.on(GameState.Captured, () => {
 	setTimeout(captchaSuccess, 2000);
+});
+
+GameState.on(GameState.CaptureFailed, () => {
+	bogaball.classList.remove("capturing");
+	bogaball.classList.add("throw-reverse");
+	bitcoinImage.classList.add("throw-reverse");
+
+	// This needs to match the "throw" animation duration!
+	setTimeout(() => {
+		UIState.set(UIStates.Start());
+		GameState.set(GameStates.Start());
+	}, 1000);
 });
 
 /**
