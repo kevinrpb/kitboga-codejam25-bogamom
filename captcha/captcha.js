@@ -58,8 +58,8 @@ const GameStates = {
  ** Variables & Elements
  */
 
-let uiState = UIStates.Start();
-let gameState = GameStates.Start();
+let uiState = {};
+let gameState = {};
 
 const bogaball = document.getElementById("bogaball");
 const bitcoinImage = document.getElementById("bitcoin-image");
@@ -128,3 +128,10 @@ document.addEventListener("keydown", (event) => {
 		}
 	}
 });
+
+/**
+ ** Init
+ */
+
+UIState.set(UIStates.Start());
+GameState.set(GameStates.Start());
