@@ -2,6 +2,9 @@
  ** Settings
  */
 
+const ATTACK_CHANCE = 0.5;
+const ATTACK_VALUE = 0.25;
+
 // Health below -> chance
 const CAPTURE_CHANCE = [
 	[0.1, 0.5],
@@ -46,6 +49,7 @@ const UIState = {
 	ShowMoves: "ui-state-show-moves",
 	Captured: "ui-state-captured",
 	Run: "ui-state-run",
+	UsedMove: "ui-state-used-move",
 
 	...baseState((state) => {
 		uiState = state;
@@ -70,6 +74,7 @@ const UIStates = {
 	ShowMoves: () => ({ name: UIState.ShowMoves }),
 	Captured: () => ({ name: UIState.Captured }),
 	Run: () => ({ name: UIState.Run }),
+	UsedMove: () => ({ name: UIState.UsedMove }),
 };
 
 const GameStates = {
@@ -87,7 +92,7 @@ const GameStates = {
 let uiState = {};
 let gameState = {};
 
-const enemyHealth = 1.0;
+let enemyHealth = 1.0;
 
 const bogaball = document.getElementById("bogaball");
 const bitcoinImage = document.getElementById("bitcoin-image");
@@ -99,7 +104,12 @@ const ballButton = document.getElementById("ball-button");
 const fightButton = document.getElementById("fight-button");
 const specialButton = document.getElementById("special-button");
 const runButton = document.getElementById("run-button");
+
 const movesContainer = document.getElementById("moves-container");
+const moveRuse = document.getElementById("move-ruse");
+const moveGrift = document.getElementById("move-grift");
+
+const bitcoinHealthValue = document.getElementById("bitcoin-health-value");
 
 /**
  ** Utils
@@ -121,7 +131,6 @@ const setButtonsDisabled = (disabled) => {
 };
 
 /**
- *
  * @param {HTMLElement} element
  * @param {boolean} visible
  */
@@ -131,6 +140,19 @@ const setElementVisible = (element, visible) => {
 	} else {
 		element.classList.add("hide");
 	}
+};
+
+/**
+ * @param {HTMLElement} healthElement
+ * @param {number} oldHealth
+ * @param {number} newHealth
+ */
+const updateHealth = (healthElement, oldHealth, newHealth) => {
+	const oldClass = `v${Math.floor(oldHealth * 100)}`;
+	const newClass = `v${Math.floor(newHealth * 100)}`;
+
+	healthElement.classList.remove(oldClass);
+	healthElement.classList.add(newClass);
 };
 
 /**
@@ -170,6 +192,38 @@ UIState.on(UIState.Run, () => {
 	setElementVisible(movesContainer, false);
 	setButtonsDisabled(true);
 	dialogText.innerText = "You can't escape!";
+
+	setTimeout(() => {
+		UIState.set(UIStates.Start());
+	}, 1000);
+});
+
+UIState.on(UIState.UsedMove, () => {
+	setElementVisible(actionMenu, false);
+	setElementVisible(movesContainer, false);
+	setButtonsDisabled(true);
+
+	const r = Math.random();
+	if (r <= ATTACK_CHANCE) {
+		const oldHealth = enemyHealth;
+		const newHealth = enemyHealth - ATTACK_VALUE;
+		updateHealth(bitcoinHealthValue, oldHealth, newHealth);
+
+		enemyHealth = newHealth;
+
+		if (newHealth <= 0.05) {
+			dialogText.innerText = "You lost the bitcoin!";
+
+			setTimeout(() => {
+				updateHealth(bitcoinHealthValue, enemyHealth, 1.0);
+				enemyHealth = 1.0;
+			}, 1000);
+		} else {
+			dialogText.innerText = "You attacked!";
+		}
+	} else {
+		dialogText.innerText = "You missed!";
+	}
 
 	setTimeout(() => {
 		UIState.set(UIStates.Start());
@@ -254,6 +308,8 @@ ballButton.addEventListener("click", () => {
 });
 
 runButton.addEventListener("click", () => UIState.set(UIStates.Run()));
+moveGrift.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
+moveRuse.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 
 document.addEventListener("keydown", (event) => {
 	if (event.key === "Escape") {

@@ -215,14 +215,23 @@ p {
 	height: 100%;
 
 	background-color: grey;
+	transition: width 200ms;
 }
 
 .character-health-value.v100 {
 	width: 100%;
 }
 
+.character-health-value.v75 {
+	width: 75%;
+}
+
 .character-health-value.v50 {
 	width: 50%;
+}
+
+.character-health-value.v25 {
+	width: 25%;
 }
 
 .character-health-value.v0 {
