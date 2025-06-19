@@ -2,11 +2,14 @@
  ** Settings
  */
 
-const ATTACK_CHANCE = 0.5;
-const ATTACK_VALUE = 0.25;
+// How long the person has to complete the captcha before it resets.
 const TIME_SECONDS = 20;
+// Chance that an attack will land and damage the bitcoin.
+const ATTACK_CHANCE = 0.5;
+// Percent of health damage that an attack does.
+const ATTACK_VALUE = 0.25;
 
-// Health below -> chance
+// Map of health threshold to the chance of capturing when the bitcoin's health is below that.
 const CAPTURE_CHANCE = [
 	[0.1, 0.5],
 	[0.25, 0.25],
@@ -14,6 +17,7 @@ const CAPTURE_CHANCE = [
 	[1.0, 0.0],
 ];
 
+// For debugging: forcing capturing always.
 const FORCE_CAPTURING = false;
 
 /**
@@ -180,6 +184,18 @@ const setHealthDecreaseInterval = () => {
 	}, 1000);
 };
 
+const resetState = () => {
+	UIState.set(UIStates.Start());
+	GameState.set(GameStates.Start());
+
+	enemyHealth = 1.0;
+	updateHealth(bitcoinHealthValue, enemyHealth);
+	characterHealth = 1.0;
+	updateHealth(characterHealthValue, characterHealth);
+
+	setHealthDecreaseInterval();
+};
+
 /**
  ** UI State transitions
  */
@@ -269,16 +285,7 @@ UIState.on(UIState.CharacterDied, () => {
 
 	dialogText.innerText = "You lost!";
 
-	setTimeout(() => {
-		UIState.set(UIStates.Start());
-
-		enemyHealth = 1.0;
-		updateHealth(bitcoinHealthValue, enemyHealth);
-		characterHealth = 1.0;
-		updateHealth(characterHealthValue, characterHealth);
-
-		setHealthDecreaseInterval();
-	}, 2000);
+	setTimeout(resetState, 2000);
 });
 
 /**
@@ -367,22 +374,8 @@ moveGrift.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 moveRuse.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 
 document.addEventListener("keydown", (event) => {
-	if (event.key === "Escape") {
-		if (uiState.name === UIState.ShowMoves) {
-			UIState.set(UIStates.Start());
-		} else if (
-			uiState.name === UIState.Captured ||
-			gameState.name === GameState.Captured
-		) {
-			UIState.set(UIStates.Start());
-			GameState.set(GameStates.Start());
-		} else if (gameState.name === GameState.ThrowBall) {
-			UIState.set(UIStates.Start());
-			GameState.set(GameStates.Start());
-		} else if (gameState.name === GameState.Capturing) {
-			UIState.set(UIStates.Start());
-			GameState.set(GameStates.Start());
-		}
+	if (event.key === "Escape" && uiState.name === UIState.ShowMoves) {
+		UIState.set(UIStates.Start());
 	}
 });
 
@@ -390,7 +383,4 @@ document.addEventListener("keydown", (event) => {
  ** Init
  */
 
-UIState.set(UIStates.Start());
-GameState.set(GameStates.Start());
-
-setHealthDecreaseInterval();
+resetState();
