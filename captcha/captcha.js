@@ -38,6 +38,7 @@ const UIState = {
 const GameState = {
 	Start: "state-start",
 	ThrowBall: "state-throw-ball",
+	Capturing: "state-capturing",
 	...baseState((state) => {
 		gameState = state;
 	}),
@@ -52,6 +53,7 @@ const UIStates = {
 const GameStates = {
 	Start: () => ({ name: GameState.Start }),
 	ThrowBall: () => ({ name: GameState.ThrowBall }),
+	Capturing: () => ({ name: GameState.Capturing }),
 };
 
 /**
@@ -101,11 +103,16 @@ UIState.on(UIState.ShowMoves, () => {
 GameState.on(GameState.Start, () => {
 	bogaball.classList.remove("throw");
 	bitcoinImage.classList.remove("throw");
+	bogaball.classList.remove("capturing");
 });
 
 GameState.on(GameState.ThrowBall, () => {
 	bogaball.classList.add("throw");
 	bitcoinImage.classList.add("throw");
+});
+
+GameState.on(GameState.Capturing, () => {
+	bogaball.classList.add("capturing");
 });
 
 /**
@@ -116,6 +123,9 @@ fightButton.addEventListener("click", () => UIState.set(UIStates.ShowMoves()));
 ballButton.addEventListener("click", () => {
 	UIState.set(UIStates.StartDisabled());
 	GameState.set(GameStates.ThrowBall());
+
+	// This needs to match the "throw" animation duration!
+	setTimeout(() => GameState.set(GameStates.Capturing()), 1000);
 });
 
 document.addEventListener("keydown", (event) => {
@@ -123,6 +133,9 @@ document.addEventListener("keydown", (event) => {
 		if (uiState.name === UIState.ShowMoves) {
 			UIState.set(UIStates.Start());
 		} else if (gameState.name === GameState.ThrowBall) {
+			UIState.set(UIStates.Start());
+			GameState.set(GameStates.Start());
+		} else if (gameState.name === GameState.Capturing) {
 			UIState.set(UIStates.Start());
 			GameState.set(GameStates.Start());
 		}

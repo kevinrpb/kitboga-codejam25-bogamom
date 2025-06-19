@@ -1,5 +1,8 @@
 :root {
 	--ball-throw-duration: 1s;
+	--ball-throw-end-left: 242px;
+	--ball-throw-end-top: 40px;
+	--ball-throw-end-scale: 0.35;
 }
 
 @keyframes bogaball-throw {
@@ -17,16 +20,16 @@
 
 	80% {
 		opacity: 1;
-		left: 242px;
+		left: var(--ball-throw-end-left);
 		top: 16px;
-		scale: 0.35;
+		scale: var(--ball-throw-end-scale);
 	}
 
 	100% {
 		opacity: 1;
-		left: 242px;
-		top: 40px;
-		scale: 0.35;
+		left: var(--ball-throw-end-left);
+		top: var(--ball-throw-end-top);
+		scale: var(--ball-throw-end-scale);
 	}
 }
 

@@ -1,0 +1,25 @@
+:root {
+	--ball-capturing-duration: 1s;
+}
+
+@keyframes bogaball-capturing {
+	25% {
+		left: calc(var(--ball-throw-end-left) - 6px);
+		rotate: -10deg;
+	}
+
+	75% {
+		left: calc(var(--ball-throw-end-left) + 6px);
+		rotate: 10deg;
+	}
+}
+
+#bogaball.capturing {
+	opacity: 1;
+	left: var(--ball-throw-end-left);
+	top: var(--ball-throw-end-top);
+	scale: var(--ball-throw-end-scale);
+
+	animation: bogaball-capturing var(--ball-capturing-duration) infinite;
+	animation-iteration-count: 3;
+}
