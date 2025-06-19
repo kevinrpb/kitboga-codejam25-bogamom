@@ -4,6 +4,7 @@
 
 const ATTACK_CHANCE = 0.5;
 const ATTACK_VALUE = 0.25;
+const TIME_SECONDS = 20;
 
 // Health below -> chance
 const CAPTURE_CHANCE = [
@@ -50,6 +51,8 @@ const UIState = {
 	Captured: "ui-state-captured",
 	Run: "ui-state-run",
 	UsedMove: "ui-state-used-move",
+	ShowHowTo: "ui-state-show-how-to",
+	CharacterDied: "ui-state-character-died",
 
 	...baseState((state) => {
 		uiState = state;
@@ -75,6 +78,8 @@ const UIStates = {
 	Captured: () => ({ name: UIState.Captured }),
 	Run: () => ({ name: UIState.Run }),
 	UsedMove: () => ({ name: UIState.UsedMove }),
+	ShowHowTo: () => ({ name: UIState.ShowHowTo }),
+	CharacterDied: () => ({ name: UIState.CharacterDied }),
 };
 
 const GameStates = {
@@ -93,6 +98,12 @@ let uiState = {};
 let gameState = {};
 
 let enemyHealth = 1.0;
+let characterHealth = 1.0;
+
+/**
+ * @type number | undefined
+ */
+let healthDecreaseInterval = undefined;
 
 const bogaball = document.getElementById("bogaball");
 const bitcoinImage = document.getElementById("bitcoin-image");
@@ -110,6 +121,7 @@ const moveRuse = document.getElementById("move-ruse");
 const moveGrift = document.getElementById("move-grift");
 
 const bitcoinHealthValue = document.getElementById("bitcoin-health-value");
+const characterHealthValue = document.getElementById("character-health-value");
 
 /**
  ** Utils
@@ -144,15 +156,27 @@ const setElementVisible = (element, visible) => {
 
 /**
  * @param {HTMLElement} healthElement
- * @param {number} oldHealth
  * @param {number} newHealth
  */
-const updateHealth = (healthElement, oldHealth, newHealth) => {
-	const oldClass = `v${Math.floor(oldHealth * 100)}`;
-	const newClass = `v${Math.floor(newHealth * 100)}`;
+const updateHealth = (healthElement, newHealth) => {
+	const percent = Math.floor(newHealth * 100);
 
-	healthElement.classList.remove(oldClass);
-	healthElement.classList.add(newClass);
+	healthElement.style.setProperty("--health-value", `${percent}%`);
+};
+
+const setHealthDecreaseInterval = () => {
+	clearInterval(healthDecreaseInterval);
+	healthDecreaseInterval = setInterval(() => {
+		characterHealth -= 1 / TIME_SECONDS;
+		updateHealth(characterHealthValue, characterHealth);
+
+		if (characterHealth <= 0.05) {
+			clearInterval(healthDecreaseInterval);
+			UIState.set(UIStates.CharacterDied());
+
+			updateHealth(characterHealthValue, 0);
+		}
+	}, 1000);
 };
 
 /**
@@ -193,9 +217,7 @@ UIState.on(UIState.Run, () => {
 	setButtonsDisabled(true);
 	dialogText.innerText = "You can't escape!";
 
-	setTimeout(() => {
-		UIState.set(UIStates.Start());
-	}, 1000);
+	setTimeout(() => UIState.set(UIStates.Start()), 1000);
 });
 
 UIState.on(UIState.UsedMove, () => {
@@ -205,17 +227,17 @@ UIState.on(UIState.UsedMove, () => {
 
 	const r = Math.random();
 	if (r <= ATTACK_CHANCE) {
-		const oldHealth = enemyHealth;
 		const newHealth = enemyHealth - ATTACK_VALUE;
-		updateHealth(bitcoinHealthValue, oldHealth, newHealth);
+		updateHealth(bitcoinHealthValue, newHealth);
 
 		enemyHealth = newHealth;
 
 		if (newHealth <= 0.05) {
+			updateHealth(bitcoinHealthValue, 0);
 			dialogText.innerText = "You lost the bitcoin!";
 
 			setTimeout(() => {
-				updateHealth(bitcoinHealthValue, enemyHealth, 1.0);
+				updateHealth(bitcoinHealthValue, 1.0);
 				enemyHealth = 1.0;
 			}, 1000);
 		} else {
@@ -225,9 +247,37 @@ UIState.on(UIState.UsedMove, () => {
 		dialogText.innerText = "You missed!";
 	}
 
+	setTimeout(() => UIState.set(UIStates.Start()), 1000);
+});
+
+UIState.on(UIState.ShowHowTo, () => {
+	setElementVisible(actionMenu, false);
+	setElementVisible(movesContainer, false);
+	setButtonsDisabled(true);
+
+	dialogText.innerText =
+		"Lower the bitcoin's health\nand use a ball to capture it!\nBe fast!";
+
+	setTimeout(() => UIState.set(UIStates.Start()), 2000);
+});
+
+UIState.on(UIState.CharacterDied, () => {
+	setElementVisible(actionMenu, false);
+	setElementVisible(movesContainer, false);
+	setButtonsDisabled(true);
+
+	dialogText.innerText = "You lost!";
+
 	setTimeout(() => {
 		UIState.set(UIStates.Start());
-	}, 1000);
+
+		enemyHealth = 1.0;
+		updateHealth(bitcoinHealthValue, enemyHealth);
+		characterHealth = 1.0;
+		updateHealth(characterHealthValue, characterHealth);
+
+		setHealthDecreaseInterval();
+	}, 2000);
 });
 
 /**
@@ -307,6 +357,9 @@ ballButton.addEventListener("click", () => {
 	setTimeout(() => GameState.set(GameStates.Capturing()), 1000);
 });
 
+specialButton.addEventListener("click", () =>
+	UIState.set(UIStates.ShowHowTo()),
+);
 runButton.addEventListener("click", () => UIState.set(UIStates.Run()));
 moveGrift.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 moveRuse.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
@@ -337,3 +390,5 @@ document.addEventListener("keydown", (event) => {
 
 UIState.set(UIStates.Start());
 GameState.set(GameStates.Start());
+
+setHealthDecreaseInterval();
