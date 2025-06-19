@@ -1,6 +1,6 @@
 @font-face {
 	font-family: "KenneyHigh"; /*a name to be used later*/
-	src: url("./kenney-high.ttf"); /*URL to font*/
+	src: url("../kenney-high.ttf"); /*URL to font*/
 }
 
 :root {
@@ -8,8 +8,6 @@
 	--captcha-height: 300px;
 	--container-padding: 2px;
 	--bottom-panel-height: 80px;
-
-	--ball-throw-duration: 1s;
 }
 
 html,
@@ -261,64 +259,10 @@ p {
 	margin-right: 15px;
 }
 
-@keyframes bogaball-throw {
-	0% {
-		opacity: 0;
-		left: 100px;
-		top: 110px;
-		scale: 0.7;
-	}
-
-	40% {
-		opacity: 1;
-		scale: 1;
-	}
-
-	80% {
-		opacity: 1;
-		left: 242px;
-		top: 16px;
-		scale: 0.35;
-	}
-
-	100% {
-		opacity: 1;
-		left: 242px;
-		top: 40px;
-		scale: 0.35;
-	}
-}
-
 #bogaball {
 	position: absolute;
 	opacity: 0;
 	left: 100px;
 	top: 110px;
 	scale: 0.7;
-}
-
-#bogaball.throw {
-	animation: bogaball-throw var(--ball-throw-duration) forwards;
-}
-
-@keyframes bitcoin-image-throw {
-	0% {
-		opacity: 1;
-		scale: 1;
-	}
-
-	40% {
-		opacity: 1;
-		scale: 1;
-	}
-
-	80%,
-	100% {
-		opacity: 0;
-		scale: 0.35;
-	}
-}
-
-#bitcoin-image.throw {
-	animation: bitcoin-image-throw var(--ball-throw-duration) forwards;
 }
