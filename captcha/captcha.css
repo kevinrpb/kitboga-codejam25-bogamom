@@ -8,6 +8,8 @@
 	--captcha-height: 300px;
 	--container-padding: 2px;
 	--bottom-panel-height: 80px;
+
+	--ball-throw-duration: 1s;
 }
 
 html,
@@ -296,7 +298,7 @@ p {
 }
 
 #bogaball.throw {
-	animation: bogaball-throw 1s forwards;
+	animation: bogaball-throw var(--ball-throw-duration) forwards;
 }
 
 @keyframes bitcoin-image-throw {
@@ -318,5 +320,5 @@ p {
 }
 
 #bitcoin-image.throw {
-	animation: bitcoin-image-throw 1s forwards;
+	animation: bitcoin-image-throw var(--ball-throw-duration) forwards;
 }
