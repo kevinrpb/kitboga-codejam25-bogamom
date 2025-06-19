@@ -117,6 +117,7 @@ const specialButton = document.getElementById("special-button");
 const runButton = document.getElementById("run-button");
 
 const movesContainer = document.getElementById("moves-container");
+const moveGauntlet = document.getElementById("move-gauntlet");
 const moveRuse = document.getElementById("move-ruse");
 const moveGrift = document.getElementById("move-grift");
 
@@ -361,6 +362,7 @@ specialButton.addEventListener("click", () =>
 	UIState.set(UIStates.ShowHowTo()),
 );
 runButton.addEventListener("click", () => UIState.set(UIStates.Run()));
+moveGauntlet.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 moveGrift.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 moveRuse.addEventListener("click", () => UIState.set(UIStates.UsedMove()));
 
