@@ -45,6 +45,7 @@ const UIState = {
 	StartDisabled: "ui-state-start-disabled",
 	ShowMoves: "ui-state-show-moves",
 	Captured: "ui-state-captured",
+	Run: "ui-state-run",
 
 	...baseState((state) => {
 		uiState = state;
@@ -68,6 +69,7 @@ const UIStates = {
 	StartDisabled: () => ({ name: UIState.StartDisabled }),
 	ShowMoves: () => ({ name: UIState.ShowMoves }),
 	Captured: () => ({ name: UIState.Captured }),
+	Run: () => ({ name: UIState.Run }),
 };
 
 const GameStates = {
@@ -163,6 +165,17 @@ UIState.on(UIState.Captured, () => {
 	dialogText.innerText = "You captured the bitcoin!";
 });
 
+UIState.on(UIState.Run, () => {
+	setElementVisible(actionMenu, false);
+	setElementVisible(movesContainer, false);
+	setButtonsDisabled(true);
+	dialogText.innerText = "You can't escape!";
+
+	setTimeout(() => {
+		UIState.set(UIStates.Start());
+	}, 1000);
+});
+
 /**
  ** Game State transitions
  */
@@ -231,6 +244,7 @@ GameState.on(GameState.CaptureFailed, () => {
  */
 
 fightButton.addEventListener("click", () => UIState.set(UIStates.ShowMoves()));
+
 ballButton.addEventListener("click", () => {
 	UIState.set(UIStates.StartDisabled());
 	GameState.set(GameStates.ThrowBall());
@@ -238,6 +252,8 @@ ballButton.addEventListener("click", () => {
 	// This needs to match the "throw" animation duration!
 	setTimeout(() => GameState.set(GameStates.Capturing()), 1000);
 });
+
+runButton.addEventListener("click", () => UIState.set(UIStates.Run()));
 
 document.addEventListener("keydown", (event) => {
 	if (event.key === "Escape") {
