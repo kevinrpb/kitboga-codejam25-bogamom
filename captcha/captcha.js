@@ -17,6 +17,10 @@ const CAPTURE_CHANCE = [
 	[1.0, 0.0],
 ];
 
+// Controls whether the health should stop decreasing when successfully capturing the bitcoin. Set to false for extra
+// trolling.
+const STOP_HEALTH_DECREASE_ON_CAPTURE = true;
+
 // For debugging: forcing capturing always.
 const FORCE_CAPTURING = false;
 
@@ -336,6 +340,10 @@ GameState.on(GameState.Capturing, () => {
 });
 
 GameState.on(GameState.Captured, () => {
+	if (STOP_HEALTH_DECREASE_ON_CAPTURE) {
+		clearInterval(healthDecreaseInterval);
+	}
+
 	setTimeout(captchaSuccess, 2000);
 });
 
