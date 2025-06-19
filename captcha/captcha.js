@@ -2,10 +2,11 @@
  ** State definitions
  */
 
-const State = {
-	Start: "state-start",
-	ShowMoves: "state-show-moves",
-	ThrowBall: "state-throw-ball",
+/**
+ *
+ * @param {(state: { name: string, data?: object }) => void} onChange
+ */
+const baseState = (onChange) => ({
 	/**
 	 *
 	 * @param {string} state
@@ -19,23 +20,44 @@ const State = {
 	 * @param {{ name: string, data?: object }} state
 	 */
 	set: (state) => {
-		currentState = state;
+		onChange(state);
 		const event = new CustomEvent(state.name, { detail: state });
 		document.dispatchEvent(event);
 	},
+});
+
+const UIState = {
+	Start: "ui-state-start",
+	ShowMoves: "ui-state-show-moves",
+	...baseState((state) => {
+		uiState = state;
+	}),
 };
 
-const States = {
-	Start: () => ({ name: State.Start }),
-	ShowMoves: () => ({ name: State.ShowMoves }),
-	ThrowBall: () => ({ name: State.ThrowBall }),
+const GameState = {
+	Start: "state-start",
+	ThrowBall: "state-throw-ball",
+	...baseState((state) => {
+		gameState = state;
+	}),
+};
+
+const UIStates = {
+	Start: () => ({ name: UIState.Start }),
+	ShowMoves: () => ({ name: UIState.ShowMoves }),
+};
+
+const GameStates = {
+	Start: () => ({ name: GameState.Start }),
+	ThrowBall: () => ({ name: GameState.ThrowBall }),
 };
 
 /**
  ** Variables & Elements
  */
 
-let currentState = States.Start();
+let uiState = UIStates.Start();
+let gameState = GameStates.Start();
 
 const bogaball = document.getElementById("bogaball");
 const bitcoinImage = document.getElementById("bitcoin-image");
@@ -45,18 +67,27 @@ const fightButton = document.getElementById("fight-button");
 const movesContainer = document.getElementById("moves-container");
 
 /**
- ** State transitions
+ ** UI State transitions
  */
 
-State.on(State.Start, () => {
+UIState.on(UIState.Start, () => {
 	movesContainer.classList.add("hide");
 });
 
-State.on(State.ShowMoves, () => {
+UIState.on(UIState.ShowMoves, () => {
 	movesContainer.classList.remove("hide");
 });
 
-State.on(State.ThrowBall, () => {
+/**
+ ** Game State transitions
+ */
+
+GameState.on(GameState.Start, () => {
+	bogaball.classList.remove("throw");
+	bitcoinImage.classList.remove("throw");
+});
+
+GameState.on(GameState.ThrowBall, () => {
 	bogaball.classList.add("throw");
 	bitcoinImage.classList.add("throw");
 });
@@ -65,15 +96,17 @@ State.on(State.ThrowBall, () => {
  ** UI Handling
  */
 
-fightButton.addEventListener("click", () => State.set(States.ShowMoves()));
-ballButton.addEventListener("click", () => State.set(States.ThrowBall()));
+fightButton.addEventListener("click", () => UIState.set(UIStates.ShowMoves()));
+ballButton.addEventListener("click", () =>
+	GameState.set(GameStates.ThrowBall()),
+);
 
 document.addEventListener("keydown", (event) => {
 	if (event.key === "Escape") {
-		if (currentState.name === State.ShowMoves) {
-			State.set(States.Start());
-		} else if (currentState.name === State.ThrowBall) {
-			State.set(States.Start());
+		if (uiState.name === UIState.ShowMoves) {
+			UIState.set(UIStates.Start());
+		} else if (gameState.name === GameState.ThrowBall) {
+			GameState.set(GameStates.Start());
 		}
 	}
 });
