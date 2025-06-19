@@ -28,6 +28,7 @@ const baseState = (onChange) => ({
 
 const UIState = {
 	Start: "ui-state-start",
+	StartDisabled: "ui-state-start-disabled",
 	ShowMoves: "ui-state-show-moves",
 	...baseState((state) => {
 		uiState = state;
@@ -44,6 +45,7 @@ const GameState = {
 
 const UIStates = {
 	Start: () => ({ name: UIState.Start }),
+	StartDisabled: () => ({ name: UIState.StartDisabled }),
 	ShowMoves: () => ({ name: UIState.ShowMoves }),
 };
 
@@ -64,6 +66,8 @@ const bitcoinImage = document.getElementById("bitcoin-image");
 
 const ballButton = document.getElementById("ball-button");
 const fightButton = document.getElementById("fight-button");
+const specialButton = document.getElementById("special-button");
+const runButton = document.getElementById("run-button");
 const movesContainer = document.getElementById("moves-container");
 
 /**
@@ -72,6 +76,18 @@ const movesContainer = document.getElementById("moves-container");
 
 UIState.on(UIState.Start, () => {
 	movesContainer.classList.add("hide");
+	ballButton.removeAttribute("disabled");
+	fightButton.removeAttribute("disabled");
+	specialButton.removeAttribute("disabled");
+	runButton.removeAttribute("disabled");
+});
+
+UIState.on(UIState.StartDisabled, () => {
+	movesContainer.classList.add("hide");
+	ballButton.setAttribute("disabled", "true");
+	fightButton.setAttribute("disabled", "true");
+	specialButton.setAttribute("disabled", "true");
+	runButton.setAttribute("disabled", "true");
 });
 
 UIState.on(UIState.ShowMoves, () => {
@@ -97,15 +113,17 @@ GameState.on(GameState.ThrowBall, () => {
  */
 
 fightButton.addEventListener("click", () => UIState.set(UIStates.ShowMoves()));
-ballButton.addEventListener("click", () =>
-	GameState.set(GameStates.ThrowBall()),
-);
+ballButton.addEventListener("click", () => {
+	UIState.set(UIStates.StartDisabled());
+	GameState.set(GameStates.ThrowBall());
+});
 
 document.addEventListener("keydown", (event) => {
 	if (event.key === "Escape") {
 		if (uiState.name === UIState.ShowMoves) {
 			UIState.set(UIStates.Start());
 		} else if (gameState.name === GameState.ThrowBall) {
+			UIState.set(UIStates.Start());
 			GameState.set(GameStates.Start());
 		}
 	}
