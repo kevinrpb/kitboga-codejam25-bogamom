@@ -277,7 +277,7 @@ UIState.on(UIState.ShowHowTo, () => {
 	setButtonsDisabled(true);
 
 	dialogText.innerText =
-		"Lower the bitcoin's health\nand use a ball to capture it!\nBe fast!";
+		"Lower the bitcoin's health\nand use the wallet to capture it!\nBe fast!";
 
 	setTimeout(() => UIState.set(UIStates.Start()), 2000);
 });
